@@ -2,25 +2,25 @@ import React, {useRef,useState} from 'react';
 import * as tensorf from "@tensorflow/tfjs";
 import * as handpose from "@tensorflow-models/handpose";
 import Webcam from "react-webcam";
-// import logo from './logo.svg';
+import logo from './logo.svg';
 import './App.css';
 import {drawHand} from "./handdots.js";
 
 import * as fp from "fingerpose";
 import {A_Gesture,B_Gesture,D_Gesture,E_Gesture} from "./customges";
-// import {A_Gesture,B_Gesture,D_Gesture,E_Gesture} from "./assets";
+import victory from "./victory.jpeg"
 
 function App() {
   
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
-  const {emoji,setEmoji} = useState(null);
-  const images = {A_Gesture:A_Gesture,B_Gesture:B_Gesture,D_Gesture:D_Gesture,E_Gesture:E_Gesture};
+  const [emoji,setEmoji] = useState(null);
+  const images = {victory:victory}; 
 
   const runHandpose = async () =>{
     const net = await handpose.load();
-    console.log("handpose model sucessfully loaded");
+    // console.log("handpose model sucessfully loaded");
     setInterval(() => {
       detect(net)
     }, 100);
@@ -44,23 +44,25 @@ function App() {
 
        // making detection
        const hand = await net.estimateHands(video);
-       console.log(hand);
+      //  console.log(hand);
 
        if (hand.length>0){
-         const GE = new fp.GestureEstimator({
-          A_Gesture,
-          B_Gesture,
-          D_Gesture,
-          E_Gesture
-         });
+         const GE = new fp.GestureEstimator([
+          fp.Gestures.VictoryGesture,
+          fp.Gestures.ThumbsUpGesture,
+          // A_Gesture,
+          // B_Gesture,
+          // D_Gesture,
+          // E_Gesture
+         ]);
          const gesture = await GE.estimate(hand[0].landmarks, 8);
          console.log(gesture);
-         if(gesture.gestures != undefined && gesture.gestures.length>0){
+         if(gesture.gestures !== undefined && gesture.gestures.length>0){
            const confidence = gesture.gestures.map(
-             (predictions) => predictions.confidence
+             (prediction) => prediction.confidence
            );
            const maxConfidence = confidence.indexOf(
-             Math.max.apply(null,confidence)
+             Math.max.apply(null, confidence)
            );
            setEmoji(gesture.gestures[maxConfidence].name);
            console.log(emoji);

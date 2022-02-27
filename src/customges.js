@@ -19,7 +19,7 @@ for(let finger of [Finger.middle , Finger.ring, Finger.index , Finger.pinky]){
 
 export const B_Gesture = new GestureDescription('B');
 //thumb
-B_Gesture.addCurl(Finger.thumb,FingerCurl.FullCurl,1.0)
+B_Gesture.addCurl(Finger.thumb,FingerCurl.FullCurl,0.75)
 B_Gesture.addDirection(Finger.thumb,FingerDirection.HorizontalLeft,0.25)
 B_Gesture.addDirection(Finger.thumb,FingerDirection.HorizontalRight,0.25)
 
